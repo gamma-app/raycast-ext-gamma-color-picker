@@ -1,11 +1,10 @@
 import { closeMainWindow, launchCommand, LaunchType } from "@raycast/api";
 import { showFailureToast } from "@raycast/utils";
 import { pickColor } from "swift:../swift/color-picker";
-import { addToHistory } from "./history";
-import { Color, PickColorCommandLaunchProps } from "./types";
-import { getFormattedColor } from "./utils";
+import { Color } from "./types";
+import { colorToHex } from "./utils";
 
-export default async function command(props: PickColorCommandLaunchProps) {
+export default async function command() {
   await closeMainWindow();
 
   try {
@@ -14,9 +13,7 @@ export default async function command(props: PickColorCommandLaunchProps) {
       return;
     }
 
-    addToHistory(pickedColor);
-
-    const hex = getFormattedColor(pickedColor, "hex");
+    const hex = colorToHex(pickedColor);
     if (!hex) {
       throw new Error("Failed to format color");
     }

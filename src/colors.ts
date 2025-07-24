@@ -330,16 +330,6 @@ const colorPalette = {
   black: "#000000",
 };
 
-const colorRoles = {
-  primary: colorPalette.deepocean,
-  secondary: colorPalette.sky,
-  info: colorPalette.deepocean,
-  link: colorPalette.deepocean,
-  success: colorPalette.evergreen,
-  warning: colorPalette.rocketfire,
-  error: colorPalette.calamity,
-};
-
 const colorsNested = {
   spacedust: colorPalette.spacedust,
   gray: colorPalette.titanium,

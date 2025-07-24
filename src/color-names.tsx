@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { List, getPreferenceValues, LaunchProps, popToRoot, closeMainWindow, ActionPanel, Action } from "@raycast/api";
+import { List, LaunchProps, popToRoot, closeMainWindow, ActionPanel, Action } from "@raycast/api";
 import ColorJS from "colorjs.io";
 import { ColorNameListItem } from "./components/ColorNames";
 import { normalizeColorHex } from "./utils";
@@ -11,13 +11,13 @@ interface ColorWithDistance {
   distance: number;
 }
 
+const colorNamesPerGroup = 5;
+
 export default function ColorNames(props: LaunchProps) {
-  console.log("Searching for colors:", props.arguments?.searchText);
   const [isSearching, setIsSearching] = useState(false);
   const [searchString, setSearchString] = useState<string>(props.arguments?.searchText || "");
   const [matchingColors, setMatchingColors] = useState<ColorWithDistance[]>([]);
   const normalizedSearchString = normalizeColorHex(searchString);
-  const { colorNamesPerGroup = "25" } = getPreferenceValues<Preferences.ColorNames>();
 
   const findMatchingColors = (searchString: string) => {
     setIsSearching(true);
@@ -45,8 +45,7 @@ export default function ColorNames(props: LaunchProps) {
       // If any colors have distance under 0.5, show only those
       const veryCloseColors = sortedColors.filter((color) => color.distance < 0.5);
 
-      const finalColors =
-        veryCloseColors.length > 0 ? veryCloseColors : sortedColors.slice(0, Number(colorNamesPerGroup));
+      const finalColors = veryCloseColors.length > 0 ? veryCloseColors : sortedColors.slice(0, colorNamesPerGroup);
 
       setMatchingColors(finalColors);
     } catch {
