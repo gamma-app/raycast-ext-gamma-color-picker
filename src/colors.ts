@@ -366,3 +366,13 @@ export const colors = Object.entries(colorsNested).flatMap(([color, palette]) =>
     };
   });
 });
+
+colors.push({
+  name: "white",
+  value: "#ffffff",
+});
+
+colors.push({
+  name: "black",
+  value: "#000000",
+});

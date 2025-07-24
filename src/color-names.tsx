@@ -1,67 +1,91 @@
 import { useEffect, useState } from "react";
-import { List, getPreferenceValues } from "@raycast/api";
-import colorNamer from "color-namer";
+import { List, getPreferenceValues, LaunchProps, popToRoot, closeMainWindow, ActionPanel, Action } from "@raycast/api";
+import ColorJS from "colorjs.io";
 import { ColorNameListItem } from "./components/ColorNames";
-import { getColorByPlatform, getColorByProximity, normalizeColorHex } from "./utils";
-import { SortType } from "./types";
+import { normalizeColorHex } from "./utils";
+import { colors } from "./colors";
 
-export default function ColorNames() {
+interface ColorWithDistance {
+  name: string;
+  value: string;
+  distance: number;
+}
+
+export default function ColorNames(props: LaunchProps) {
+  console.log("Searching for colors:", props.arguments?.searchText);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchString, setSearchString] = useState<string>("");
-  const [colors, setColors] = useState<colorNamer.Colors<colorNamer.Palette>>();
-  const [sortBy, setSortBy] = useState<SortType>("platform");
+  const [searchString, setSearchString] = useState<string>(props.arguments?.searchText || "");
+  const [matchingColors, setMatchingColors] = useState<ColorWithDistance[]>([]);
   const normalizedSearchString = normalizeColorHex(searchString);
-  const { colorNamesPerGroup = "5" } = getPreferenceValues<Preferences.ColorNames>();
+  const { colorNamesPerGroup = "25" } = getPreferenceValues<Preferences.ColorNames>();
 
-  const loadColors = (searchString: string) => {
+  const findMatchingColors = (searchString: string) => {
     setIsSearching(true);
     try {
-      const colors = colorNamer(searchString);
-      setColors(colors);
+      if (!searchString || searchString === "#") {
+        setMatchingColors([]);
+        setIsSearching(false);
+        return;
+      }
+
+      const searchColor = new ColorJS(searchString);
+      const colorsWithDistance = colors.map((color) => {
+        const paletteColor = new ColorJS(color.value);
+        const distance = searchColor.deltaE(paletteColor, "2000");
+        return {
+          name: color.name,
+          value: color.value,
+          distance,
+        };
+      });
+
+      // Sort by distance (closest first)
+      const sortedColors = colorsWithDistance.sort((a, b) => a.distance - b.distance);
+
+      // If any colors have distance under 0.5, show only those
+      const veryCloseColors = sortedColors.filter((color) => color.distance < 0.5);
+
+      const finalColors =
+        veryCloseColors.length > 0 ? veryCloseColors : sortedColors.slice(0, Number(colorNamesPerGroup));
+
+      setMatchingColors(finalColors);
     } catch {
-      setColors(undefined);
+      setMatchingColors([]);
     }
     setIsSearching(false);
   };
 
   useEffect(() => {
-    loadColors(normalizedSearchString);
-  }, [normalizedSearchString]);
+    findMatchingColors(normalizedSearchString);
+  }, [normalizedSearchString, colorNamesPerGroup]);
+
+  const handleEscapeAction = async () => {
+    await popToRoot();
+    await closeMainWindow();
+  };
 
   return (
-    <List
-      isLoading={isSearching}
-      onSearchTextChange={setSearchString}
-      searchBarPlaceholder="Search HEX (#00ff00)"
-      searchBarAccessory={
-        <List.Dropdown
-          tooltip="Sort colors by"
-          storeValue
-          onChange={(v) => {
-            setSortBy(v as SortType);
-          }}
-        >
-          <List.Dropdown.Item value="platform" title="Sort by Platform" />
-          <List.Dropdown.Item value="proximity" title="Sort by Proximity" />
-        </List.Dropdown>
-      }
-    >
-      {colors ? (
-        sortBy === "platform" ? (
-          getColorByPlatform(normalizedSearchString, colors).map(([palette, colorList]) => (
-            <List.Section key={palette} title={palette}>
-              {colorList.slice(0, Number(colorNamesPerGroup)).map((color, index) => (
-                <ColorNameListItem key={`color-name-${color.name}-${index}`} color={color} />
-              ))}
-            </List.Section>
-          ))
-        ) : (
-          getColorByProximity(colors).map((color, index) => (
-            <ColorNameListItem key={`color-name-${color.name}-${index}`} color={color} />
-          ))
-        )
+    <List isLoading={isSearching} onSearchTextChange={setSearchString} searchText={searchString}>
+      {matchingColors.length > 0 ? (
+        matchingColors.map((color, index) => (
+          <ColorNameListItem
+            key={`color-name-${color.name}-${index}`}
+            color={{
+              name: color.name,
+              hex: color.value,
+              distance: color.distance,
+            }}
+          />
+        ))
       ) : (
-        <List.EmptyView title={searchString ? "No colors found" : "Search for a color to see"} />
+        <List.EmptyView
+          title={searchString ? "No colors found" : "Search for a color to see matching shades"}
+          actions={
+            <ActionPanel>
+              <Action title="Close" onAction={handleEscapeAction} />
+            </ActionPanel>
+          }
+        />
       )}
     </List>
   );

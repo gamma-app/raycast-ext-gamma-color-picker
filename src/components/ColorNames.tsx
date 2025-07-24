@@ -1,9 +1,15 @@
-import { Action, ActionPanel, Icon, List } from "@raycast/api";
-import { Color } from "color-namer";
+import { Action, ActionPanel, Icon, List, PopToRootType, closeMainWindow, popToRoot } from "@raycast/api";
 import { normalizeColorHex } from "../utils";
 
-export const ColorNameListItem = ({ color }: { color: Color }) => {
+interface ColorItem {
+  name: string;
+  hex: string;
+  distance: number;
+}
+
+export const ColorNameListItem = ({ color }: { color: ColorItem }) => {
   const hexCode = color.hex.replace(/^#/, "");
+
   return (
     <List.Item
       icon={{
@@ -15,6 +21,7 @@ export const ColorNameListItem = ({ color }: { color: Color }) => {
         },
       }}
       title={color.name}
+      subtitle={`Distance: ${color.distance.toFixed(1)}`}
       accessories={[
         {
           tag: {
@@ -25,7 +32,15 @@ export const ColorNameListItem = ({ color }: { color: Color }) => {
       ]}
       actions={
         <ActionPanel>
-          <Action.CopyToClipboard content={color.name} title="Copy Name" />
+          <Action.CopyToClipboard
+            content={color.name}
+            title="Copy Shade Name"
+            onCopy={() =>
+              closeMainWindow({
+                popToRootType: PopToRootType.Immediate,
+              })
+            }
+          />
           <Action.CopyToClipboard content={color.hex} title="Copy Hex" />
         </ActionPanel>
       }

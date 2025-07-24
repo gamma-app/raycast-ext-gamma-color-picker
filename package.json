@@ -39,6 +39,73 @@
           "required": false
         }
       ]
+    },
+    {
+      "name": "organize-colors",
+      "title": "Organize Colors",
+      "description": "Organize your colors",
+      "mode": "view",
+      "preferences": [
+        {
+          "data": [
+            {
+              "title": "Paste to Active App",
+              "value": "paste"
+            },
+            {
+              "title": "Copy to Clipboard",
+              "value": "copy"
+            }
+          ],
+          "default": "copy",
+          "description": "The primary action to perform on a selected color",
+          "name": "primaryAction",
+          "required": false,
+          "title": "Primary Action",
+          "type": "dropdown"
+        }
+      ]
+    },
+    {
+      "name": "color-names",
+      "title": "Color Names",
+      "description": "Get the name of a color",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "searchText",
+          "placeholder": "Enter color hex",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "preferences": [
+        {
+          "type": "dropdown",
+          "name": "colorNamesPerGroup",
+          "required": false,
+          "title": "Color Names Per Group",
+          "description": "The number of color names to display per group",
+          "data": [
+            {
+              "title": "5",
+              "value": "5"
+            },
+            {
+              "title": "10",
+              "value": "10"
+            },
+            {
+              "title": "25",
+              "value": "25"
+            },
+            {
+              "title": "All",
+              "value": "Infinity"
+            }
+          ]
+        }
+      ]
     }
   ],
   "preferences": [
