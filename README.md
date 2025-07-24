@@ -1,7 +1,7 @@
 # Gamma Color Picker Raycast Extension
 
-<video src="https://user-images.githubusercontent.com/YOUR_USER_ID/YOUR_NUMBERS/YOUR_VIDEO.mp4" width="100%" controls>
-  Your browser does not support the video tag.
+<video src="https://github.com/user-attachments/assets/9a7a2838-9c2f-4eaf-b4e8-f9536cb80a5f" width="100%" controls>
+Your browser does not support the video tag.
 </video>
 
 ### Installation
