@@ -1,8 +1,8 @@
 # Gamma Color Picker Raycast Extension
 
-|                                                    |                                                    |
-| -------------------------------------------------- | -------------------------------------------------- |
-| ![Screenshot 1](metadata/gamma-color-picker-1.png) | ![Screenshot 2](metadata/gamma-color-picker-2.png) |
+<video src="https://user-images.githubusercontent.com/YOUR_USER_ID/YOUR_NUMBERS/YOUR_VIDEO.mp4" width="100%" controls>
+  Your browser does not support the video tag.
+</video>
 
 ### Installation
 
