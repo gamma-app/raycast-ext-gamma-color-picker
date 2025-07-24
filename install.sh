@@ -2,7 +2,7 @@
 
 set -e
 
-GIST_URL="https://gist.githubusercontent.com/USER/GIST_ID/raw/gamma-color-picker.tar.gz"
+GIST_URL="https://github.com/gamma-app/raycast-ext-gamma-color-picker/releases/download/v1.0.0/gamma-color-picker.tar.gz"
 RAYCAST_EXTENSIONS_DIR="$HOME/.config/raycast/extensions"
 TEMP_DIR=$(mktemp -d)
 EXTENSION_NAME="gamma-color-picker"
