@@ -19,3 +19,5 @@ Ensure Xcode is installed from the Mac App Store or Apple Developer website.
 ```bash
 npx ray dev
 ```
+
+There's no need to keep running this, once you run it, the extension will be installed
